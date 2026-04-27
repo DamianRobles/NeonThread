@@ -45,4 +45,4 @@ Foro de discusión temático sobre cultura cyberpunk. Los usuarios pueden regist
 
 ## URL del repositorio
 
-[https://github.com/DamianRobles/NeonThread](https://github.com/DamianRobles/NeonThread)2
+[https://github.com/DamianRobles/NeonThread](https://github.com/DamianRobles/NeonThread)
