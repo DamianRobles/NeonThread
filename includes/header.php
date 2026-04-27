@@ -1,9 +1,6 @@
 <?php
 // Valores por defecto para las variables que cada página puede personalizar
-// antes de hacer include de este archivo.
 // El operador ?? asigna el valor de la derecha solo si la variable no existe.
-$pageTitle     = $pageTitle     ?? "NeonThread"; // Título que aparece en la pestaña del navegador
-$activeSection = $activeSection ?? "";           // Sección activa para resaltar en el navbar
 $basePath      = $basePath      ?? "./";         // Ruta base para construir links (cambia si la página está en una subcarpeta)
 ?>
 <!doctype html>

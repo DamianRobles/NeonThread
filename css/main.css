@@ -512,3 +512,248 @@ body {
     margin-bottom: 0.25rem;
     text-align: center;
 }
+
+/* ================================================
+   AUTH — login.php / register.php
+   Estilos compartidos por los formularios de sesión.
+   ================================================ */
+
+/* Fondo de la página de autenticación */
+.auth-page {
+    background-color: var(--gb-bg);
+    min-height: 80vh;
+    padding: 2rem 0;
+}
+
+/* Tarjeta contenedora del formulario */
+.auth-card {
+    background-color: var(--gb-surface);
+    border: 1px solid var(--gb-border);
+    border-radius: 4px;
+    padding: 2.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Línea decorativa degradada cyan→pink en la parte superior de la card */
+.auth-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gb-cyan), var(--gb-pink));
+}
+
+/* Cuadro del ícono principal de la card (variante cyan por defecto) */
+.auth-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 4px;
+    background-color: var(--gb-cyan-dim);
+    border: 1px solid rgba(0, 245, 255, 0.3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--gb-cyan);
+}
+
+/* Variante rosa del ícono (usada en register.php) */
+.auth-icon-pink {
+    background-color: var(--gb-pink-dim);
+    border-color: rgba(255, 0, 144, 0.3);
+    color: var(--gb-pink);
+}
+
+.auth-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--gb-text);
+    margin-bottom: 0.3rem;
+}
+
+.auth-subtitle {
+    font-size: 0.8rem;
+    color: var(--gb-text-muted);
+}
+
+/* Etiqueta de cada campo del formulario */
+.auth-label {
+    display: block;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gb-text-muted);
+    margin-bottom: 0.4rem;
+}
+
+/* Input con estilos del tema cyberpunk */
+.auth-input {
+    background-color: var(--gb-surface-2) !important;
+    border: 1px solid var(--gb-border) !important;
+    color: var(--gb-text) !important;
+    border-radius: 2px !important;
+    font-size: 0.88rem;
+    padding: 0.55rem 0.85rem;
+}
+
+.auth-input:focus {
+    border-color: var(--gb-cyan) !important;
+    box-shadow: 0 0 0 2px var(--gb-cyan-dim) !important;
+}
+
+.auth-input::placeholder {
+    color: var(--gb-text-muted);
+}
+
+/* Botón que alterna visibilidad de la contraseña (ojo) */
+.auth-toggle-btn {
+    background-color: var(--gb-surface-2);
+    border: 1px solid var(--gb-border);
+    border-left: none;
+    color: var(--gb-text-muted);
+    border-radius: 0 2px 2px 0 !important;
+    padding: 0 0.75rem;
+    transition: color 0.15s;
+}
+
+.auth-toggle-btn:hover {
+    color: var(--gb-cyan);
+    background-color: var(--gb-surface-2);
+    border-color: var(--gb-border);
+}
+
+/* Contenedor del ícono de coincidencia de contraseñas (check / X) */
+.auth-match-icon {
+    display: flex;
+    align-items: center;
+    background-color: var(--gb-surface-2);
+    border: 1px solid var(--gb-border);
+    border-left: none;
+    border-radius: 0 2px 2px 0;
+    min-width: 38px;
+    justify-content: center;
+}
+
+/* Texto de ayuda bajo un campo */
+.auth-hint {
+    font-size: 0.7rem;
+    color: var(--gb-text-muted);
+    margin-top: 0.3rem;
+}
+
+/* Links inline dentro del formulario (ej: "términos y condiciones") */
+.auth-link {
+    color: var(--gb-cyan);
+    text-decoration: none;
+    font-size: inherit;
+}
+
+.auth-link:hover {
+    color: var(--gb-pink);
+}
+
+/* Link pequeño (ej: "¿Olvidaste tu contraseña?") */
+.auth-link-small {
+    color: var(--gb-text-muted);
+    font-size: 0.72rem;
+    text-decoration: none;
+    transition: color 0.15s;
+}
+
+.auth-link-small:hover {
+    color: var(--gb-cyan);
+}
+
+/* Checkbox personalizado con color cyan al estar marcado */
+.auth-check .form-check-input {
+    background-color: var(--gb-surface-2);
+    border-color: var(--gb-border);
+    border-radius: 2px;
+}
+
+.auth-check .form-check-input:checked {
+    background-color: var(--gb-cyan);
+    border-color: var(--gb-cyan);
+}
+
+.auth-check .form-check-label {
+    font-size: 0.8rem;
+    color: var(--gb-text-muted);
+}
+
+/* Alertas de feedback al usuario */
+.alert-glitch {
+    border-radius: 2px;
+    font-size: 0.82rem;
+    padding: 0.75rem 1rem;
+    border-left: 3px solid;
+}
+
+.alert-glitch-error {
+    background-color: rgba(255, 0, 144, 0.08);
+    border-color: var(--gb-pink);
+    color: var(--gb-pink);
+}
+
+.alert-glitch-success {
+    background-color: var(--gb-cyan-dim);
+    border-color: var(--gb-cyan);
+    color: var(--gb-cyan);
+}
+
+/* Separador con texto centrado (ej: "¿Ya tienes cuenta?") */
+.auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--gb-text-muted);
+    font-size: 0.75rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--gb-border);
+}
+
+/* Nota de seguridad decorativa al pie de la card */
+.auth-security-note {
+    font-size: 0.72rem;
+    color: var(--gb-text-muted);
+}
+
+/* Barra de fortaleza de contraseña */
+.password-strength {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.strength-bar {
+    flex: 1;
+    height: 3px;
+    background-color: var(--gb-border);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+/* El relleno se anima con JS al escribir la contraseña */
+.strength-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 2px;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-label {
+    font-size: 0.7rem;
+    color: var(--gb-text-muted);
+    white-space: nowrap;
+    min-width: 120px;
+    transition: color 0.3s ease;
+}

@@ -1,7 +1,5 @@
 <?php
 // Variables que header.php necesita para personalizar el título y la ruta base
-$pageTitle     = "Inicio";
-$activeSection = "";   // Ninguna sección del navbar se resalta en el inicio
 $basePath      = "./"; // Las páginas en la raíz usan "./" como ruta base
 include 'includes/header.php';
 
