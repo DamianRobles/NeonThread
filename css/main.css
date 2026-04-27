@@ -247,3 +247,268 @@ body {
     font-size: 0.75rem;
     color: var(--gb-text-muted);
 }
+/* ================================================
+   INDEX — HERO
+   Sección principal con fondo de rejilla y degradados.
+   ================================================ */
+.hero-section {
+    position: relative;
+    background-color: var(--gb-surface); /* Fondo ligeramente diferente al body */
+    border-bottom: 1px solid var(--gb-border);
+    padding: 80px 0 60px;
+    overflow: hidden;
+}
+
+/* Rejilla decorativa de fondo usando dos gradientes cruzados */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(var(--gb-border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--gb-border) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.4;
+}
+
+/* Degradado que difumina la rejilla hacia abajo para que no tape el texto */
+.hero-section::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, transparent, var(--gb-surface));
+}
+
+/* Resplandor radial cyan sobre el título */
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(0,245,255,0.06) 0%, transparent 70%);
+    pointer-events: none; /* No bloquea clicks */
+}
+
+/* Título principal: tamaño fluido con clamp entre 2rem y 3.5rem */
+.hero-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gb-text);
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+
+/* ================================================
+   INDEX — SECCIONES DEL FORO
+   Cards que enlazan a cada sección.
+   ================================================ */
+
+/* Título de sección reutilizado en varias páginas */
+.section-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--gb-text);
+}
+
+.section-subtitle {
+    font-size: 0.85rem;
+    color: var(--gb-text-muted);
+    margin-top: 0.5rem;
+}
+
+/* La card sube levemente al hacer hover */
+.section-card {
+    border-radius: 4px;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.section-card:hover {
+    transform: translateY(-3px);
+}
+
+/* Caja del ícono en la card */
+.section-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+
+/* Variantes de color del ícono */
+.section-icon-cyan {
+    background-color: var(--gb-cyan-dim);
+    color: var(--gb-cyan);
+    border: 1px solid rgba(0, 245, 255, 0.3);
+}
+
+.section-icon-pink {
+    background-color: var(--gb-pink-dim);
+    color: var(--gb-pink);
+    border: 1px solid rgba(255, 0, 144, 0.3);
+}
+
+.section-card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.section-card-desc {
+    font-size: 0.8rem;
+    color: var(--gb-text-muted);
+    line-height: 1.6;
+}
+
+/* Pie de card: distribuye el contador de hilos y la flecha en extremos opuestos */
+.section-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--gb-border);
+}
+
+.section-arrow {
+    font-size: 1.1rem;
+    transition: transform 0.2s ease;
+}
+
+/* La flecha se desplaza a la derecha al hacer hover sobre la card completa */
+.section-card:hover .section-arrow {
+    transform: translateX(4px);
+}
+
+
+/* ================================================
+   INDEX — HILOS RECIENTES
+   Lista de hilos en cards horizontales.
+   ================================================ */
+
+/* Fondo diferente para distinguir visualmente esta sección */
+.recent-section {
+    background-color: var(--gb-surface);
+    border-top: 1px solid var(--gb-border);
+    border-bottom: 1px solid var(--gb-border);
+}
+
+.thread-card {
+    border-radius: 4px;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.thread-card:hover {
+    background-color: var(--gb-surface-2) !important;
+}
+
+/* Cuadro del ícono de sección en cada hilo */
+.thread-icon {
+    width: 36px;
+    height: 36px;
+    background-color: var(--gb-cyan-dim);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+/* Título: se recorta a 2 líneas con ellipsis si es muy largo */
+.thread-title {
+    font-size: 0.88rem;
+    color: var(--gb-text);
+    line-height: 1.4;
+    font-weight: 500;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.thread-meta {
+    font-size: 0.72rem;
+    margin-top: 4px;
+}
+
+/* Badge pequeño que muestra el nombre de la sección del hilo */
+.badge-section {
+    background-color: var(--gb-surface-2);
+    border: 1px solid var(--gb-border);
+    color: var(--gb-text-muted);
+    font-size: 0.65rem;
+    padding: 1px 7px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.thread-stats {
+    min-width: 40px;
+}
+
+
+/* ================================================
+   INDEX — CTA
+   Sección final que invita al usuario a registrarse.
+   ================================================ */
+.cta-section {
+    background-color: var(--gb-bg);
+}
+
+.cta-card {
+    background-color: var(--gb-surface);
+    border: 1px solid var(--gb-border);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Línea decorativa degradada en la parte superior de la card */
+.cta-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gb-cyan), var(--gb-pink), var(--gb-cyan));
+}
+
+.cta-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--gb-text);
+}
+
+.cta-subtitle {
+    font-size: 0.9rem;
+    color: var(--gb-text-muted);
+    line-height: 1.8;
+}
+
+/* Igualar altura de las cards de hilos recientes */
+.thread-card {
+    min-height: 90px;
+    align-items: center !important;
+}
+
+/* Texto decorativo japonés sobre el título del hero */
+.hero-furigana {
+    font-size: 1.5rem;
+    letter-spacing: 6px;
+    color: var(--gb-text-muted);
+    margin-bottom: 0.25rem;
+    text-align: center;
+}

@@ -16,7 +16,7 @@ $basePath      = $basePath      ?? "./";         // Ruta base para construir lin
     <meta name="description" content="NeonThread — El foro underground de la cultura cyberpunk" />
 
     <!-- htmlspecialchars() previene inyección de código HTML en el título -->
-    <title><?= htmlspecialchars($pageTitle) ?> | NeonThread</title>
+    <title>NeonThread</title>
 
     <!-- Bootstrap CSS desde CDN: proporciona el sistema de grilla y componentes base -->
     <link
