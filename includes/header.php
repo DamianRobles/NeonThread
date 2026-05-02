@@ -1,21 +1,26 @@
 <?php
+// session_start() debe llamarse antes de cualquier output HTML.
+// if(!isset) evita el error de "session already started" si alguna página
+// ya llamó a session_start() antes de incluir este archivo.
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Valores por defecto para las variables que cada página puede personalizar
-// El operador ?? asigna el valor de la derecha solo si la variable no existe.
-$basePath      = $basePath      ?? "./";         // Ruta base para construir links (cambia si la página está en una subcarpeta)
+// antes de hacer include de este archivo.
+$activeSection = $activeSection ?? "";
+$basePath      = $basePath      ?? "./";
 ?>
 <!doctype html>
 <html lang="es">
 
 <head>
     <meta charset="utf-8" />
-    <!-- Hace que el diseño sea responsivo en dispositivos móviles -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="NeonThread — El foro underground de la cultura cyberpunk" />
-
-    <!-- htmlspecialchars() previene inyección de código HTML en el título -->
     <title>NeonThread</title>
 
-    <!-- Bootstrap CSS desde CDN: proporciona el sistema de grilla y componentes base -->
+    <!-- Bootstrap CSS desde CDN: proporciona el sistema de grid y componentes base -->
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
@@ -27,23 +32,23 @@ $basePath      = $basePath      ?? "./";         // Ruta base para construir lin
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.12.1/font/bootstrap-icons.min.css"
         rel="stylesheet" />
 
-    <!-- Estilos propios del proyecto: variables de color, componentes y estilos de cada página -->
+    <!-- Estilos propios del proyecto -->
     <link href="<?= $basePath ?>css/main.css" rel="stylesheet" />
 </head>
 
 <body>
 
-    <!-- Navbar fija en la parte superior (fixed-top) -->
+    <!-- Navbar fija en la parte superior -->
     <!-- navbar-expand-lg: el menú se colapsa en pantallas menores a 992px -->
     <nav class="navbar navbar-expand-lg navbar-glitch fixed-top" id="mainNav">
         <div class="container">
 
-            <!-- Logo / nombre del sitio: lleva al inicio -->
+            <!-- Logo -->
             <a class="navbar-brand glitch-brand" href="<?= $basePath ?>index.php">
                 <i class="bi bi-terminal-fill me-2"></i>NeonThread
             </a>
 
-            <!-- Botón hamburguesa: visible solo en móvil, controla el colapso del menú -->
+            <!-- Botón hamburguesa: visible solo en móvil -->
             <button
                 class="navbar-toggler"
                 type="button"
@@ -55,20 +60,18 @@ $basePath      = $basePath      ?? "./";         // Ruta base para construir lin
                 <i class="bi bi-list text-neon-cyan fs-4"></i>
             </button>
 
-            <!-- Contenido del navbar: se oculta en móvil y se muestra al presionar hamburguesa -->
+            <!-- Contenido del navbar -->
             <div class="collapse navbar-collapse" id="navbarMain">
 
                 <!-- Links del lado izquierdo -->
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
                     <!-- Dropdown de secciones del foro -->
-                    <!-- data-bs-toggle="dropdown" activa el comportamiento de Bootstrap -->
                     <li class="nav-item dropdown">
                         <a class="nav-link nav-glitch dropdown-toggle" href="#"
                             role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-collection-fill me-1"></i>Secciones
                         </a>
-                        <!-- Cada item lleva a section.php con un id distinto por parámetro GET -->
                         <ul class="dropdown-menu dropdown-glitch">
                             <li>
                                 <a class="dropdown-item" href="<?= $basePath ?>section.php?id=1">
@@ -95,18 +98,53 @@ $basePath      = $basePath      ?? "./";         // Ruta base para construir lin
 
                 </ul>
 
-                <!-- Links del lado derecho: acciones de sesión -->
+                <!-- Links del lado derecho: cambian según el estado de sesión -->
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center gap-2">
-                    <li class="nav-item">
-                        <a class="nav-link nav-glitch" href="<?= $basePath ?>login.php">
-                            <i class="bi bi-box-arrow-in-right me-1"></i>Iniciar Sesión
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="btn btn-neon btn-sm" href="<?= $basePath ?>register.php">
-                            <i class="bi bi-person-plus-fill me-1"></i>Registrarse
-                        </a>
-                    </li>
+
+                    <?php if (isset($_SESSION['usuario_id'])): ?>
+
+                        <!-- Usuario autenticado: mostrar su nombre y opciones de cuenta -->
+
+                        <!-- Enlace al perfil con el nombre del usuario -->
+                        <li class="nav-item">
+                            <a class="nav-link nav-glitch" href="<?= $basePath ?>profile.php">
+                                <i class="bi bi-person-circle me-1 text-neon-cyan"></i>
+                                <?= htmlspecialchars($_SESSION['username']) ?>
+                            </a>
+                        </li>
+
+                        <!-- Enlace al panel de admin solo si el rol es 'admin' -->
+                        <?php if ($_SESSION['rol'] === 'admin'): ?>
+                            <li class="nav-item">
+                                <a class="nav-link nav-glitch" href="<?= $basePath ?>admin/dashboard.php">
+                                    <i class="bi bi-shield-fill me-1 text-neon-pink"></i>Admin
+                                </a>
+                            </li>
+                        <?php endif; ?>
+
+                        <!-- Botón para cerrar sesión -->
+                        <li class="nav-item">
+                            <a class="btn btn-neon btn-sm" href="<?= $basePath ?>logout.php">
+                                <i class="bi bi-box-arrow-right me-1"></i>Salir
+                            </a>
+                        </li>
+
+                    <?php else: ?>
+
+                        <!-- Usuario no autenticado: mostrar login y registro -->
+                        <li class="nav-item">
+                            <a class="nav-link nav-glitch" href="<?= $basePath ?>login.php">
+                                <i class="bi bi-box-arrow-in-right me-1"></i>Iniciar Sesión
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-neon btn-sm" href="<?= $basePath ?>register.php">
+                                <i class="bi bi-person-plus-fill me-1"></i>Registrarse
+                            </a>
+                        </li>
+
+                    <?php endif; ?>
+
                 </ul>
 
             </div>
@@ -114,5 +152,4 @@ $basePath      = $basePath      ?? "./";         // Ruta base para construir lin
     </nav>
 
     <!-- Espacio para compensar la altura del navbar fixed-top (66px) -->
-    <!-- Sin esto el contenido de la página quedaría tapado por el navbar -->
     <div style="padding-top: 66px;"></div>

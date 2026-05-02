@@ -1,13 +1,24 @@
 <?php
-$basePath      = "./";
-include 'includes/header.php';
+/**
+ * register.php — Formulario de registro de nuevos usuarios
+ *
+ * Valida los datos del formulario y, si todo es correcto,
+ * inserta el nuevo usuario en la BD con la contraseña hasheada.
+ * Redirige al login tras un registro exitoso.
+ *
+ * Variables para header.php:
+ *   $activeSection — resalta el item activo en el navbar
+ *   $basePath      — prefijo de rutas relativas (páginas en raíz usan "./")
+ */
 
-// Mensajes de feedback y array para repoblar el formulario tras un error
-$error   = "";
-$success = "";
-$campos  = [];
+require_once 'includes/db.php';
 
-// Procesamiento del formulario al recibir POST
+// Mensaje de error y array para repoblar el formulario si hay errores
+$error  = "";
+$campos = [];
+
+// Procesamiento del formulario al recibir POST.
+// Se hace ANTES del include de header.php para poder usar header() si el registro es exitoso.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username  = trim($_POST['username']         ?? '');
     $email     = trim($_POST['email']            ?? '');
@@ -15,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password2 = trim($_POST['password_confirm'] ?? '');
     $terminos  = isset($_POST['terminos']);
 
-    // Conservar los campos de texto para repoblar el form (nunca la contraseña)
+    // Conservar los campos de texto para repoblar el form si hay error (nunca la contraseña)
     $campos = [
         'username' => $username,
         'email'    => $email,
@@ -37,11 +48,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!$terminos) {
         $error = "Debes aceptar los términos y condiciones para continuar.";
     } else {
-        // TODO: conectar con la BD aquí
-        $success = "¡Registro recibido, " . htmlspecialchars($username) . "! Cuenta creada correctamente.";
-        $campos  = []; // Limpiar el formulario tras éxito
+        // Verificar que el username y el email no estén ya registrados
+        $stmt = $pdo->prepare('SELECT id FROM usuarios WHERE username = ? OR email = ?');
+        $stmt->execute([$username, $email]);
+
+        if ($stmt->fetch()) {
+            $error = "El nombre de usuario o el correo electrónico ya están en uso.";
+        } else {
+            // Hashear la contraseña con bcrypt antes de guardarla
+            $hash = password_hash($password, PASSWORD_BCRYPT);
+
+            $stmt = $pdo->prepare('
+                INSERT INTO usuarios (username, email, password)
+                VALUES (?, ?, ?)
+            ');
+            $stmt->execute([$username, $email, $hash]);
+
+            // Redirigir al login con un parámetro para mostrar mensaje de bienvenida.
+            // exit() asegura que no se ejecute ningún código ni se envíe HTML después.
+            header('Location: login.php?registered=1');
+            exit;
+        }
     }
 }
+
+$activeSection = "";
+$basePath      = "./";
+include 'includes/header.php';
 ?>
 
 <!-- =============================================
@@ -71,14 +104,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="alert-glitch alert-glitch-error mb-4" role="alert">
                             <i class="bi bi-exclamation-triangle-fill me-2"></i>
                             <?= htmlspecialchars($error) ?>
-                        </div>
-                    <?php endif; ?>
-
-                    <!-- Confirmación de registro exitoso -->
-                    <?php if (!empty($success)): ?>
-                        <div class="alert-glitch alert-glitch-success mb-4" role="alert">
-                            <i class="bi bi-check-circle-fill me-2"></i>
-                            <?= $success ?>
                         </div>
                     <?php endif; ?>
 
@@ -218,7 +243,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <!-- /auth-card -->
 
-                <!-- Nota de seguridad decorativa al pie de la card -->
+                <!-- Nota de seguridad al pie de la card -->
                 <p class="auth-security-note text-center mt-3">
                     <i class="bi bi-shield-lock-fill me-1 text-neon-cyan"></i>
                     Tu contraseña se almacena encriptada &bull; Nunca la compartimos
@@ -233,70 +258,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <script>
     // Alterna visibilidad de la contraseña y cambia el ícono del botón
-    document.getElementById('togglePassword').addEventListener('click', function() {
+    document.getElementById('togglePassword').addEventListener('click', function () {
         const input = document.getElementById('password');
-        const icon = document.getElementById('toggleIcon');
+        const icon  = document.getElementById('toggleIcon');
 
         if (input.type === 'password') {
-            input.type = 'text';
+            input.type     = 'text';
             icon.className = 'bi bi-eye-slash-fill';
         } else {
-            input.type = 'password';
+            input.type     = 'password';
             icon.className = 'bi bi-eye-fill';
         }
     });
 
     // Calcula la fortaleza de la contraseña y actualiza la barra visual
-    document.getElementById('password').addEventListener('input', function() {
-        const val = this.value;
-        const fill = document.getElementById('strengthFill');
+    document.getElementById('password').addEventListener('input', function () {
+        const val   = this.value;
+        const fill  = document.getElementById('strengthFill');
         const label = document.getElementById('strengthLabel');
-        let score = 0;
+        let score   = 0;
 
         // Un punto por cada criterio de complejidad que se cumpla
-        if (val.length >= 8) score++;
-        if (/[A-Z]/.test(val)) score++;
-        if (/[0-9]/.test(val)) score++;
-        if (/[^a-zA-Z0-9]/.test(val)) score++;
+        if (val.length >= 8)            score++;
+        if (/[A-Z]/.test(val))          score++;
+        if (/[0-9]/.test(val))          score++;
+        if (/[^a-zA-Z0-9]/.test(val))  score++;
 
         // Niveles de fortaleza: anchura, color y etiqueta
-        const levels = [{
-                w: '0%',
-                color: 'transparent',
-                text: 'Ingresa una contraseña'
-            },
-            {
-                w: '25%',
-                color: '#ff0090',
-                text: 'Muy débil'
-            },
-            {
-                w: '50%',
-                color: '#ff6600',
-                text: 'Débil'
-            },
-            {
-                w: '75%',
-                color: '#ffcc00',
-                text: 'Aceptable'
-            },
-            {
-                w: '100%',
-                color: '#00f5ff',
-                text: 'Fuerte'
-            },
+        const levels = [
+            { w: '0%',   color: 'transparent', text: 'Ingresa una contraseña' },
+            { w: '25%',  color: '#ff0090',     text: 'Muy débil'  },
+            { w: '50%',  color: '#ff6600',     text: 'Débil'      },
+            { w: '75%',  color: '#ffcc00',     text: 'Aceptable'  },
+            { w: '100%', color: '#00f5ff',     text: 'Fuerte'     },
         ];
 
-        fill.style.width = levels[score].w;
+        fill.style.width           = levels[score].w;
         fill.style.backgroundColor = levels[score].color;
-        label.textContent = levels[score].text;
-        label.style.color = levels[score].color;
+        label.textContent          = levels[score].text;
+        label.style.color          = levels[score].color;
     });
 
     // Muestra un ícono de check o X mientras el usuario escribe la confirmación
-    document.getElementById('password_confirm').addEventListener('input', function() {
+    document.getElementById('password_confirm').addEventListener('input', function () {
         const pass1 = document.getElementById('password').value;
-        const icon = document.getElementById('matchIcon');
+        const icon  = document.getElementById('matchIcon');
 
         if (this.value === '') {
             icon.innerHTML = '';
@@ -308,13 +314,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     });
 
     // Validación del lado del cliente antes de enviar el formulario
-    document.getElementById('registerForm').addEventListener('submit', function(e) {
-        const username = document.getElementById('username').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
+    document.getElementById('registerForm').addEventListener('submit', function (e) {
+        const username  = document.getElementById('username').value.trim();
+        const email     = document.getElementById('email').value.trim();
+        const password  = document.getElementById('password').value;
         const password2 = document.getElementById('password_confirm').value;
-        const terminos = document.getElementById('terminos').checked;
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const terminos  = document.getElementById('terminos').checked;
+        const emailRegex    = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const usernameRegex = /^[a-zA-Z0-9_\-]+$/;
 
         if (!username || !email || !password || !password2) {

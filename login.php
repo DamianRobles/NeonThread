@@ -1,26 +1,70 @@
 <?php
-$basePath      = "./";
-include 'includes/header.php';
+/**
+ * login.php — Formulario de inicio de sesión
+ *
+ * Verifica las credenciales contra la BD, inicia la sesión PHP
+ * y redirige al foro si son correctas.
+ * También muestra un mensaje de bienvenida si viene de register.php.
+ *
+ * Variables para header.php:
+ *   $activeSection — resalta el item activo en el navbar
+ *   $basePath      — prefijo de rutas relativas (páginas en raíz usan "./")
+ */
 
-// Mensajes de feedback para el usuario
+require_once 'includes/db.php';
+
+// Iniciar el sistema de sesiones de PHP
+session_start();
+
+// Si el usuario ya tiene sesión activa, redirigir directo al foro
+if (isset($_SESSION['usuario_id'])) {
+    header('Location: forum.php');
+    exit;
+}
+
 $error   = "";
 $success = "";
 
-// Procesamiento del formulario al recibir POST
+// Mostrar mensaje de bienvenida si viene de un registro exitoso
+if (isset($_GET['registered'])) {
+    $success = "Cuenta creada correctamente. Ya puedes iniciar sesión.";
+}
+
+// Procesamiento del formulario al recibir POST.
+// Se hace ANTES del include de header.php para poder usar header() si el login es exitoso.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email    = trim($_POST['email']    ?? '');
     $password = trim($_POST['password'] ?? '');
 
-    // Validaciones del lado del servidor
+    // Validaciones básicas antes de consultar la BD
     if (empty($email) || empty($password)) {
         $error = "Por favor completa todos los campos.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "El formato del correo electrónico no es válido.";
     } else {
-        // TODO: conectar con la BD aquí
-        $success = "Credenciales recibidas correctamente.";
+        // Buscar el usuario por email
+        $stmt = $pdo->prepare('SELECT id, username, password, rol FROM usuarios WHERE email = ?');
+        $stmt->execute([$email]);
+        $usuario = $stmt->fetch();
+
+        // password_verify() compara el texto plano con el hash bcrypt almacenado
+        if (!$usuario || !password_verify($password, $usuario['password'])) {
+            $error = "Correo electrónico o contraseña incorrectos.";
+        } else {
+            // Credenciales correctas: guardar datos del usuario en la sesión
+            $_SESSION['usuario_id'] = $usuario['id'];
+            $_SESSION['username']   = $usuario['username'];
+            $_SESSION['rol']        = $usuario['rol'];
+
+            header('Location: forum.php');
+            exit;
+        }
     }
 }
+
+$activeSection = "";
+$basePath      = "./";
+include 'includes/header.php';
 ?>
 
 <!-- =============================================
@@ -45,19 +89,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <p class="auth-subtitle">Accede a tu cuenta en la red</p>
                     </div>
 
+                    <!-- Mensaje de éxito (viene de register.php o de ?registered=1) -->
+                    <?php if (!empty($success)): ?>
+                        <div class="alert-glitch alert-glitch-success mb-4" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            <?= htmlspecialchars($success) ?>
+                        </div>
+                    <?php endif; ?>
+
                     <!-- Alerta de error del servidor -->
                     <?php if (!empty($error)): ?>
                         <div class="alert-glitch alert-glitch-error mb-4" role="alert">
                             <i class="bi bi-exclamation-triangle-fill me-2"></i>
                             <?= htmlspecialchars($error) ?>
-                        </div>
-                    <?php endif; ?>
-
-                    <!-- Confirmación de envío -->
-                    <?php if (!empty($success)): ?>
-                        <div class="alert-glitch alert-glitch-success mb-4" role="alert">
-                            <i class="bi bi-check-circle-fill me-2"></i>
-                            <?= htmlspecialchars($success) ?>
                         </div>
                     <?php endif; ?>
 
@@ -145,7 +189,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <!-- /auth-card -->
 
-
             </div>
         </div>
         <!-- /row -->
@@ -155,25 +198,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <script>
     // Alterna visibilidad de la contraseña y cambia el ícono del botón
-    document.getElementById('togglePassword').addEventListener('click', function() {
+    document.getElementById('togglePassword').addEventListener('click', function () {
         const input = document.getElementById('password');
-        const icon = document.getElementById('toggleIcon');
+        const icon  = document.getElementById('toggleIcon');
 
         if (input.type === 'password') {
-            input.type = 'text';
+            input.type     = 'text';
             icon.className = 'bi bi-eye-slash-fill';
         } else {
-            input.type = 'password';
+            input.type     = 'password';
             icon.className = 'bi bi-eye-fill';
         }
     });
 
     // Validación del lado del cliente antes de enviar el formulario
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-        const email = document.getElementById('email').value.trim();
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+        const email    = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value.trim();
-
-        // Expresión regular básica para validar formato de email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         if (!email || !password) {
