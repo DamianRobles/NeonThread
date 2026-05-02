@@ -757,3 +757,203 @@ body {
     min-width: 120px;
     transition: color 0.3s ease;
 }
+
+/* ================================================
+   FORUM — forum.php
+   ================================================ */
+
+/* Cabecera de página reutilizable en section.php y otras páginas */
+.page-header {
+    background-color: var(--gb-surface);
+    border-bottom: 1px solid var(--gb-border);
+    padding: 1.5rem 0;
+}
+
+.page-header-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--gb-text);
+    margin-bottom: 0.2rem;
+}
+
+.page-header-sub {
+    font-size: 0.75rem;
+    color: var(--gb-text-muted);
+    margin: 0;
+}
+
+/* Heading de sección dentro de la página */
+.forum-section-heading {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--gb-text-muted);
+}
+
+/* Fila de cada sección del foro */
+.forum-section-row {
+    border-radius: 4px;
+    overflow: hidden;
+    transition: border-color 0.2s ease;
+}
+
+.forum-section-row:hover {
+    border-color: var(--gb-cyan);
+}
+
+/* Bloque de ícono lateral */
+.forum-sec-icon-wrap {
+    width: 64px;
+    min-width: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    align-self: stretch;
+}
+
+.icon-wrap-cyan {
+    background-color: var(--gb-cyan-dim);
+    color: var(--gb-cyan);
+    border-right: 1px solid rgba(0, 245, 255, 0.2);
+}
+
+.icon-wrap-pink {
+    background-color: var(--gb-pink-dim);
+    color: var(--gb-pink);
+    border-right: 1px solid rgba(255, 0, 144, 0.2);
+}
+
+/* Título de la sección */
+.forum-sec-title {
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: opacity 0.15s;
+}
+
+.forum-sec-title:hover { opacity: 0.8; }
+
+/* Descripción de la sección */
+.forum-sec-desc {
+    font-size: 0.78rem;
+    color: var(--gb-text-muted);
+    line-height: 1.5;
+}
+
+/* Pills de estadísticas */
+.stat-pill {
+    font-size: 0.72rem;
+    color: var(--gb-text-muted);
+    background-color: var(--gb-surface-2);
+    border: 1px solid var(--gb-border);
+    padding: 2px 8px;
+    border-radius: 2px;
+    display: inline-block;
+}
+
+/* Título del último hilo — truncado a una línea */
+.forum-last-title {
+    font-size: 0.75rem;
+    color: var(--gb-text);
+    transition: color 0.15s;
+    display: inline;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 300px;
+    vertical-align: bottom;
+}
+
+.forum-last-title:hover { color: var(--gb-cyan); }
+
+/* Flecha de navegación lateral */
+.forum-sec-arrow {
+    font-size: 1rem;
+    transition: transform 0.2s ease;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+}
+
+.forum-section-row:hover .forum-sec-arrow {
+    transform: translateX(3px);
+}
+
+/* ================================================
+   FORUM — SIDEBAR
+   ================================================ */
+.sidebar-card {
+    background-color: var(--gb-surface);
+    border: 1px solid var(--gb-border);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.sidebar-card-header {
+    background-color: var(--gb-surface-2);
+    border-bottom: 1px solid var(--gb-border);
+    padding: 0.65rem 1rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--gb-text);
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-card-body { padding: 1rem; }
+
+/* Hilos en el sidebar */
+.sidebar-thread { padding: 2px 0; }
+
+.sidebar-thread-icon {
+    width: 28px;
+    height: 28px;
+    background-color: var(--gb-cyan-dim);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+/* Título truncado a 2 líneas */
+.sidebar-thread-title {
+    font-size: 0.78rem;
+    color: var(--gb-text);
+    line-height: 1.4;
+    transition: color 0.15s;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.sidebar-thread-title:hover { color: var(--gb-cyan); }
+
+.sidebar-thread-meta {
+    font-size: 0.68rem;
+    margin-top: 3px;
+}
+
+/* Lista de reglas del foro */
+.forum-rules-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.forum-rules-list li {
+    font-size: 0.78rem;
+    color: var(--gb-text-muted);
+    display: flex;
+    align-items: flex-start;
+}
