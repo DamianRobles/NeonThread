@@ -1,114 +1,76 @@
 <?php
-// Variables que header.php necesita para personalizar el título y la ruta base
-$basePath      = "./"; // Las páginas en la raíz usan "./" como ruta base
+
+/**
+ * index.php — Landing page de NeonThread
+ *
+ * Muestra las secciones del foro con conteo de hilos reales
+ * y los 6 hilos más recientes de la BD.
+ */
+
+require_once 'includes/db.php';
+
+$activeSection = "";
+$basePath      = "./";
 include 'includes/header.php';
 
-// Datos de las secciones del foro
-// TODO: reemplazar con consulta SELECT a la tabla secciones cuando se conecte la BD
-$secciones = [
-    [
-        "id"          => 1,
-        "nombre"      => "Videojuegos",
-        "descripcion" => "Cyberpunk 2077, Deus Ex, Observer y todo el gaming distópico.",
-        "icono"       => "bi-controller",
-        "hilos"       => 142,
-        "color"       => "cyan",
-    ],
-    [
-        "id"          => 2,
-        "nombre"      => "Libros",
-        "descripcion" => "Neuromante, Snow Crash, ¿Sueñan los androides? y más literatura.",
-        "icono"       => "bi-book-fill",
-        "hilos"       => 98,
-        "color"       => "pink",
-    ],
-    [
-        "id"          => 3,
-        "nombre"      => "Juegos de Mesa",
-        "descripcion" => "Shadowrun, Android Netrunner, Cyberpunk RED y otros TTRPGs.",
-        "icono"       => "bi-dice-5-fill",
-        "hilos"       => 57,
-        "color"       => "cyan",
-    ],
-    [
-        "id"          => 4,
-        "nombre"      => "Lore Cyberpunk",
-        "descripcion" => "Corporaciones, tecnología, filosofía y estética del género.",
-        "icono"       => "bi-cpu-fill",
-        "hilos"       => 203,
-        "color"       => "pink",
-    ],
-];
+$isLoggedIn = isset($_SESSION['usuario_id']);
 
-// Hilos recientes para mostrar en la landing
-// TODO: reemplazar con consulta SELECT a hilos ordenados por fecha DESC cuando se conecte la BD
-$hilosRecientes = [
-    [
-        "id"         => 1,
-        "titulo"     => "¿Cuál es el mejor mod gráfico para Cyberpunk 2077 en 2025?",
-        "autor"      => "NetRunner_77",
-        "seccion"    => "Videojuegos",
-        "seccion_id" => 1,
-        "respuestas" => 24,
-        "likes"      => 15,
-        "tiempo"     => "hace 2 horas",
-    ],
-    [
-        "id"         => 2,
-        "titulo"     => "Reseña: Neuromante de William Gibson — el libro que lo inició todo",
-        "autor"      => "GhostShell_X",
-        "seccion"    => "Libros",
-        "seccion_id" => 2,
-        "respuestas" => 18,
-        "likes"      => 32,
-        "tiempo"     => "hace 5 horas",
-    ],
-    [
-        "id"         => 3,
-        "titulo"     => "Guía de inicio para Shadowrun 6ª Edición — recursos en español",
-        "autor"      => "Fixer_Ramos",
-        "seccion"    => "Juegos de Mesa",
-        "seccion_id" => 3,
-        "respuestas" => 9,
-        "likes"      => 21,
-        "tiempo"     => "hace 1 día",
-    ],
-    [
-        "id"         => 4,
-        "titulo"     => "Debate: ¿Es el cyberpunk un género optimista o pesimista?",
-        "autor"      => "VoidWalker",
-        "seccion"    => "Lore Cyberpunk",
-        "seccion_id" => 4,
-        "respuestas" => 41,
-        "likes"      => 67,
-        "tiempo"     => "hace 1 día",
-    ],
-    [
-        "id"         => 5,
-        "titulo"     => "Android: Netrunner — diferencias entre la edición original y Revised Core",
-        "autor"      => "IceBreaker_9",
-        "seccion"    => "Juegos de Mesa",
-        "seccion_id" => 3,
-        "respuestas" => 7,
-        "likes"      => 11,
-        "tiempo"     => "hace 2 días",
-    ],
-    [
-        "id"         => 6,
-        "titulo"     => "Megacorporaciones reales vs ficticias: ¿ya llegamos al cyberpunk?",
-        "autor"      => "SynthEtica",
-        "seccion"    => "Lore Cyberpunk",
-        "seccion_id" => 4,
-        "respuestas" => 55,
-        "likes"      => 89,
-        "tiempo"     => "hace 3 días",
-    ],
-];
+// Colores alternados por posición: impar = cyan, par = pink
+$colores = ['cyan', 'pink'];
+
+// Secciones con conteo real de hilos desde la BD
+$secciones = $pdo->query("
+    SELECT
+        s.*,
+        COUNT(h.id) AS total_hilos
+    FROM secciones s
+    LEFT JOIN hilos h ON h.seccion_id = s.id
+    GROUP BY s.id
+    ORDER BY s.id
+")->fetchAll();
+
+// Asignar color alternado a cada sección
+foreach ($secciones as $i => &$sec) {
+    $sec['color'] = $colores[$i % 2];
+}
+unset($sec);
+
+// 6 hilos más recientes con datos del autor, sección y contadores
+$hilosRecientes = $pdo->query("
+    SELECT
+        h.id,
+        h.titulo,
+        h.updated_at,
+        u.username              AS autor,
+        s.nombre                AS seccion,
+        s.id                    AS seccion_id,
+        s.icono                 AS seccion_icono,
+        COUNT(DISTINCT r.id)    AS respuestas,
+        COUNT(DISTINCT l.id)    AS likes
+    FROM hilos h
+    JOIN usuarios u    ON u.id = h.usuario_id
+    JOIN secciones s   ON s.id = h.seccion_id
+    LEFT JOIN respuestas r ON r.hilo_id = h.id
+    LEFT JOIN likes l      ON l.hilo_id = h.id
+    GROUP BY h.id
+    ORDER BY h.updated_at DESC
+    LIMIT 6
+")->fetchAll();
+
+// Tiempo relativo desde un datetime de SQLite
+function tiempoRelativo(string $fecha): string
+{
+    $diff = time() - strtotime($fecha);
+    if ($diff < 60)     return 'hace unos segundos';
+    if ($diff < 3600)   return 'hace ' . floor($diff / 60)   . ' min';
+    if ($diff < 86400)  return 'hace ' . floor($diff / 3600) . ' h';
+    if ($diff < 604800) return 'hace ' . floor($diff / 86400) . ' días';
+    return date('d M Y', strtotime($fecha));
+}
 ?>
 
 <!-- =============================================
      HERO
-     Sección principal con título y botones de acción.
      ============================================= -->
 <section class="hero-section" id="inicio">
     <div class="hero-overlay"></div>
@@ -125,14 +87,20 @@ $hilosRecientes = [
                     <span class="text-neon-cyan">Neon</span><span class="text-neon-pink">Thread</span>
                 </h1>
 
-                <!-- Botones de acción principales -->
+                <!-- Botones de acción -->
                 <div class="d-flex gap-3 justify-content-center flex-wrap mt-4">
                     <a href="<?= $basePath ?>forum.php" class="btn btn-neon px-4 py-2">
                         <i class="bi bi-grid-3x3-gap-fill me-2"></i>Explorar el Foro
                     </a>
-                    <a href="<?= $basePath ?>register.php" class="btn btn-neon-pink px-4 py-2">
-                        <i class="bi bi-person-plus-fill me-2"></i>Unirse a la Red
-                    </a>
+                    <?php if (!$isLoggedIn): ?>
+                        <a href="<?= $basePath ?>register.php" class="btn btn-neon-pink px-4 py-2">
+                            <i class="bi bi-person-plus-fill me-2"></i>Unirse a la Red
+                        </a>
+                    <?php else: ?>
+                        <a href="<?= $basePath ?>new-thread.php" class="btn btn-neon-pink px-4 py-2">
+                            <i class="bi bi-plus-circle-fill me-2"></i>Nuevo Hilo
+                        </a>
+                    <?php endif; ?>
                 </div>
 
             </div>
@@ -142,8 +110,7 @@ $hilosRecientes = [
 
 <!-- =============================================
      SECCIONES DEL FORO
-     Se itera sobre $secciones para generar una card por cada una.
-     Cada card enlaza a section.php pasando el id por GET.
+     Cards que enlazan a cada sección con conteo real de hilos.
      ============================================= -->
 <section class="py-5" id="secciones">
     <div class="container">
@@ -156,33 +123,29 @@ $hilosRecientes = [
             </h2>
         </div>
 
-        <!-- Grilla: 1 columna en móvil, 2 en tablet, 4 en escritorio -->
+        <!-- Grid: 1 columna en móvil, 2 en tablet, 4 en escritorio -->
         <div class="row g-4">
             <?php foreach ($secciones as $seccion): ?>
                 <div class="col-12 col-sm-6 col-lg-3">
                     <a href="<?= $basePath ?>section.php?id=<?= $seccion['id'] ?>"
                         class="card-glitch section-card text-decoration-none d-flex flex-column h-100 p-4">
 
-                        <!-- Icono con color dinámico según el campo 'color' del array -->
                         <div class="section-icon mb-3 <?= $seccion['color'] === 'cyan' ? 'section-icon-cyan' : 'section-icon-pink' ?>">
                             <i class="bi <?= htmlspecialchars($seccion['icono']) ?>"></i>
                         </div>
 
-                        <!-- Nombre de la sección -->
                         <h5 class="section-card-title <?= $seccion['color'] === 'cyan' ? 'text-neon-cyan' : 'text-neon-pink' ?>">
                             <?= htmlspecialchars($seccion['nombre']) ?>
                         </h5>
 
-                        <!-- Descripción: flex-grow-1 empuja el footer hacia abajo -->
                         <p class="section-card-desc flex-grow-1">
                             <?= htmlspecialchars($seccion['descripcion']) ?>
                         </p>
 
-                        <!-- Pie de card: número de hilos y flecha -->
                         <div class="section-card-footer mt-3">
                             <span class="text-muted-gb" style="font-size:0.78rem;">
                                 <i class="bi bi-chat-square-dots me-1"></i>
-                                <?= $seccion['hilos'] ?> hilos
+                                <?= $seccion['total_hilos'] ?> hilos
                             </span>
                             <span class="section-arrow <?= $seccion['color'] === 'cyan' ? 'text-neon-cyan' : 'text-neon-pink' ?>">
                                 <i class="bi bi-arrow-right-circle-fill"></i>
@@ -199,8 +162,7 @@ $hilosRecientes = [
 
 <!-- =============================================
      HILOS RECIENTES
-     Muestra los últimos 6 hilos del foro.
-     TODO: reemplazar $hilosRecientes con un SELECT ordenado por fecha DESC.
+     Los 6 últimos hilos ordenados por fecha de actualización.
      ============================================= -->
 <section class="py-5 recent-section" id="recientes">
     <div class="container">
@@ -215,67 +177,69 @@ $hilosRecientes = [
             </a>
         </div>
 
-        <!-- Grilla de 2 columnas en escritorio, 1 en móvil -->
-        <div class="row g-3 align-items-stretch">
-            <?php foreach ($hilosRecientes as $hilo): ?>
-                <div class="col-12 col-lg-6">
-                    <a href="<?= $basePath ?>thread.php?id=<?= $hilo['id'] ?>"
-                        class="thread-card card-glitch text-decoration-none d-flex align-items-center gap-3 p-3 h-100">
-                        <!-- Icono de la sección a la que pertenece el hilo -->
-                        <div class="thread-icon flex-shrink-0">
-                            <?php
-                            // Mapa de seccion_id → icono de Bootstrap Icons
-                            $iconos = [
-                                1 => 'bi-controller',
-                                2 => 'bi-book-fill',
-                                3 => 'bi-dice-5-fill',
-                                4 => 'bi-cpu-fill'
-                            ];
-                            // Si el id no existe en el mapa se usa un icono genérico
-                            $icono = $iconos[$hilo['seccion_id']] ?? 'bi-chat-dots';
-                            ?>
-                            <i class="bi <?= $icono ?> text-neon-cyan"></i>
-                        </div>
-
-                        <!-- Título y metadatos del hilo -->
-                        <div class="flex-grow-1 min-w-0">
-                            <h6 class="thread-title mb-1">
-                                <?= htmlspecialchars($hilo['titulo']) ?>
-                            </h6>
-                            <div class="thread-meta d-flex align-items-center gap-3 flex-wrap">
-                                <span class="text-muted-gb">
-                                    <i class="bi bi-person-fill me-1"></i><?= htmlspecialchars($hilo['autor']) ?>
-                                </span>
-                                <span class="badge-section">
-                                    <?= htmlspecialchars($hilo['seccion']) ?>
-                                </span>
-                                <span class="text-muted-gb">
-                                    <i class="bi bi-clock me-1"></i><?= $hilo['tiempo'] ?>
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Contadores de respuestas y likes -->
-                        <div class="thread-stats flex-shrink-0 text-end">
-                            <div class="text-muted-gb" style="font-size:0.75rem;">
-                                <i class="bi bi-chat-dots me-1"></i><?= $hilo['respuestas'] ?>
-                            </div>
-                            <div class="text-neon-pink" style="font-size:0.75rem;">
-                                <i class="bi bi-heart-fill me-1"></i><?= $hilo['likes'] ?>
-                            </div>
-                        </div>
-
+        <?php if (empty($hilosRecientes)): ?>
+            <!-- Estado vacío mientras no hay hilos en la BD -->
+            <div class="text-center py-5">
+                <p class="text-muted-gb">Aún no hay hilos publicados. ¡Sé el primero!</p>
+                <?php if ($isLoggedIn): ?>
+                    <a href="<?= $basePath ?>new-thread.php" class="btn btn-neon mt-2">
+                        <i class="bi bi-plus-circle-fill me-2"></i>Crear el primer hilo
                     </a>
-                </div>
-            <?php endforeach; ?>
-        </div>
+                <?php endif; ?>
+            </div>
+        <?php else: ?>
+            <!-- Grid de 2 columnas en escritorio, 1 en móvil -->
+            <div class="row g-3 align-items-stretch">
+                <?php foreach ($hilosRecientes as $hilo): ?>
+                    <div class="col-12 col-lg-6">
+                        <a href="<?= $basePath ?>thread.php?id=<?= $hilo['id'] ?>"
+                            class="thread-card card-glitch text-decoration-none d-flex align-items-center gap-3 p-3 h-100">
+
+                            <!-- Ícono de la sección del hilo -->
+                            <div class="thread-icon flex-shrink-0">
+                                <i class="bi <?= htmlspecialchars($hilo['seccion_icono']) ?> text-neon-cyan"></i>
+                            </div>
+
+                            <!-- Título y metadatos -->
+                            <div class="flex-grow-1 min-w-0">
+                                <h6 class="thread-title mb-1">
+                                    <?= htmlspecialchars($hilo['titulo']) ?>
+                                </h6>
+                                <div class="thread-meta d-flex align-items-center gap-3 flex-wrap">
+                                    <span class="text-muted-gb">
+                                        <i class="bi bi-person-fill me-1"></i><?= htmlspecialchars($hilo['autor']) ?>
+                                    </span>
+                                    <span class="badge-section">
+                                        <?= htmlspecialchars($hilo['seccion']) ?>
+                                    </span>
+                                    <span class="text-muted-gb">
+                                        <i class="bi bi-clock me-1"></i><?= tiempoRelativo($hilo['updated_at']) ?>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Contadores de respuestas y likes -->
+                            <div class="thread-stats flex-shrink-0 text-end">
+                                <div class="text-muted-gb" style="font-size:0.75rem;">
+                                    <i class="bi bi-chat-dots me-1"></i><?= $hilo['respuestas'] ?>
+                                </div>
+                                <div class="text-neon-pink" style="font-size:0.75rem;">
+                                    <i class="bi bi-heart-fill me-1"></i><?= $hilo['likes'] ?>
+                                </div>
+                            </div>
+
+                        </a>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
 
     </div>
 </section>
 
 <!-- =============================================
-     CTA — LLAMADA A LA ACCIÓN
-     Invita al usuario a registrarse o iniciar sesión.
+     CTA — Llamada a la acción
+     Botones dinámicos según el estado de sesión.
      ============================================= -->
 <section class="cta-section py-5">
     <div class="container">
@@ -286,12 +250,21 @@ $hilosRecientes = [
                 El acceso es gratuito. No se requiere implante neural.
             </p>
             <div class="d-flex gap-3 justify-content-center flex-wrap">
-                <a href="<?= $basePath ?>register.php" class="btn btn-neon px-5 py-2">
-                    <i class="bi bi-person-plus-fill me-2"></i>Crear Cuenta
-                </a>
-                <a href="<?= $basePath ?>login.php" class="btn btn-neon-pink px-5 py-2">
-                    <i class="bi bi-box-arrow-in-right me-2"></i>Ya tengo cuenta
-                </a>
+                <?php if ($isLoggedIn): ?>
+                    <a href="<?= $basePath ?>new-thread.php" class="btn btn-neon px-5 py-2">
+                        <i class="bi bi-plus-circle-fill me-2"></i>Crear un Hilo
+                    </a>
+                    <a href="<?= $basePath ?>forum.php" class="btn btn-neon-pink px-5 py-2">
+                        <i class="bi bi-grid-3x3-gap-fill me-2"></i>Ir al Foro
+                    </a>
+                <?php else: ?>
+                    <a href="<?= $basePath ?>register.php" class="btn btn-neon px-5 py-2">
+                        <i class="bi bi-person-plus-fill me-2"></i>Crear Cuenta
+                    </a>
+                    <a href="<?= $basePath ?>login.php" class="btn btn-neon-pink px-5 py-2">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Ya tengo cuenta
+                    </a>
+                <?php endif; ?>
             </div>
         </div>
     </div>
