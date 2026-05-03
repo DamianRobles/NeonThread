@@ -24,8 +24,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // Se inserta al inicio de .auth-card y desaparece en 4 segundos.
     // ================================================
     window.mostrarAlerta = function (mensaje, tipo = 'error') {
+        // Se excluye el form del navbar (.navbar-search) porque está primero
+        // en el DOM y sería seleccionado por querySelector('form') antes que
+        // el formulario real de la página
         const contenedor = document.querySelector('.auth-card') ||
-            document.querySelector('form');
+            document.querySelector('.card-glitch form') ||
+            document.querySelector('main form');
         if (!contenedor) return;
 
         // Eliminar alerta previa para no acumularlas
@@ -136,21 +140,115 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ================================================
     // CONTADOR DE CARACTERES
-    // Actualiza el texto "N / máx" al escribir en un textarea
-    // con el atributo data-counter="true".
+    // Actualiza el texto "N / máx" al escribir en inputs o textareas
+    // que tengan el atributo data-counter="id-del-span".
     // Usado en thread.php y new-thread.php.
     // ================================================
-    document.querySelectorAll('textarea[data-counter]').forEach(function (textarea) {
-        const counterId = textarea.dataset.counter;
+    document.querySelectorAll('[data-counter]').forEach(function (el) {
+        const counterId = el.dataset.counter;
         const counter = document.getElementById(counterId);
         if (!counter) return;
 
-        const max = textarea.getAttribute('maxlength') || '∞';
+        const max = el.getAttribute('maxlength') || '∞';
 
-        textarea.addEventListener('input', function () {
+        el.addEventListener('input', function () {
             counter.textContent = this.value.length + ' / ' + max;
         });
     });
+
+
+    // ================================================
+    // VALIDACIÓN — login.php
+    // Verifica email y contraseña antes de enviar el formulario.
+    // ================================================
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function (e) {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!email || !password) {
+                e.preventDefault();
+                mostrarAlerta('Por favor completa todos los campos.');
+            } else if (!emailRegex.test(email)) {
+                e.preventDefault();
+                mostrarAlerta('El formato del correo electrónico no es válido.');
+            }
+        });
+    }
+
+
+    // ================================================
+    // VALIDACIÓN — register.php
+    // Verifica username, email, contraseña y términos.
+    // ================================================
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+        registerForm.addEventListener('submit', function (e) {
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const passwordConf = document.getElementById('password_confirm').value;
+            const terminos = document.getElementById('terminos').checked;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const usernameRegex = /^[a-zA-Z0-9_\-]+$/;
+
+            if (!username || !email || !password || !passwordConf) {
+                e.preventDefault();
+                mostrarAlerta('Por favor completa todos los campos.');
+            } else if (username.length < 3 || username.length > 50) {
+                e.preventDefault();
+                mostrarAlerta('El nombre de usuario debe tener entre 3 y 50 caracteres.');
+            } else if (!usernameRegex.test(username)) {
+                e.preventDefault();
+                mostrarAlerta('El nombre de usuario solo puede contener letras, números, guiones y guiones bajos.');
+            } else if (!emailRegex.test(email)) {
+                e.preventDefault();
+                mostrarAlerta('El formato del correo electrónico no es válido.');
+            } else if (password.length < 8) {
+                e.preventDefault();
+                mostrarAlerta('La contraseña debe tener al menos 8 caracteres.');
+            } else if (password !== passwordConf) {
+                e.preventDefault();
+                mostrarAlerta('Las contraseñas no coinciden.');
+            } else if (!terminos) {
+                e.preventDefault();
+                mostrarAlerta('Debes aceptar los términos y condiciones para continuar.');
+            }
+        });
+    }
+
+
+    // ================================================
+    // VALIDACIÓN — new-thread.php
+    // Verifica sección, título y contenido.
+    // ================================================
+    const newThreadForm = document.getElementById('newThreadForm');
+    if (newThreadForm) {
+        newThreadForm.addEventListener('submit', function (e) {
+            const seccion = document.querySelector('input[name="seccion_id"]:checked');
+            const titulo = document.getElementById('titulo').value.trim();
+            const contenido = document.getElementById('contenido').value.trim();
+
+            if (!seccion) {
+                e.preventDefault();
+                mostrarAlerta('Por favor selecciona una sección.');
+            } else if (!titulo) {
+                e.preventDefault();
+                mostrarAlerta('Por favor escribe un título para el hilo.');
+            } else if (titulo.length < 10) {
+                e.preventDefault();
+                mostrarAlerta('El título debe tener al menos 10 caracteres.');
+            } else if (!contenido) {
+                e.preventDefault();
+                mostrarAlerta('Por favor escribe el contenido del hilo.');
+            } else if (contenido.length < 20) {
+                e.preventDefault();
+                mostrarAlerta('El contenido debe tener al menos 20 caracteres.');
+            }
+        });
+    }
 
 });
 

@@ -229,30 +229,5 @@ include 'includes/header.php';
     </div>
 </main>
 
-<script>
-    // Validación del cliente antes de enviar el formulario
-    document.getElementById('newThreadForm').addEventListener('submit', function(e) {
-        const titulo = document.getElementById('titulo').value.trim();
-        const contenido = document.getElementById('contenido').value.trim();
-        const seccion = document.querySelector('input[name="seccion_id"]:checked');
-
-        if (!seccion) {
-            e.preventDefault();
-            mostrarAlerta('Por favor selecciona una sección.');
-        } else if (!titulo) {
-            e.preventDefault();
-            mostrarAlerta('Por favor escribe un título para el hilo.');
-        } else if (titulo.length < 10) {
-            e.preventDefault();
-            mostrarAlerta('El título debe tener al menos 10 caracteres.');
-        } else if (!contenido) {
-            e.preventDefault();
-            mostrarAlerta('Por favor escribe el contenido del hilo.');
-        } else if (contenido.length < 20) {
-            e.preventDefault();
-            mostrarAlerta('El contenido debe tener al menos 20 caracteres.');
-        }
-    });
-</script>
 
 <?php include 'includes/footer.php'; ?>

@@ -239,40 +239,5 @@ include 'includes/header.php';
     </div>
 </main>
 
-<script>
-    // Validación del cliente — se mantiene inline porque es específica de este formulario
-    document.getElementById('registerForm').addEventListener('submit', function(e) {
-        const username = document.getElementById('username').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
-        const password2 = document.getElementById('password_confirm').value;
-        const terminos = document.getElementById('terminos').checked;
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const usernameRegex = /^[a-zA-Z0-9_\-]+$/;
-
-        if (!username || !email || !password || !password2) {
-            e.preventDefault();
-            mostrarAlerta('Por favor completa todos los campos.');
-        } else if (username.length < 3 || username.length > 50) {
-            e.preventDefault();
-            mostrarAlerta('El nombre de usuario debe tener entre 3 y 50 caracteres.');
-        } else if (!usernameRegex.test(username)) {
-            e.preventDefault();
-            mostrarAlerta('El nombre de usuario solo puede contener letras, números, guiones y guiones bajos.');
-        } else if (!emailRegex.test(email)) {
-            e.preventDefault();
-            mostrarAlerta('El formato del correo electrónico no es válido.');
-        } else if (password.length < 8) {
-            e.preventDefault();
-            mostrarAlerta('La contraseña debe tener al menos 8 caracteres.');
-        } else if (password !== password2) {
-            e.preventDefault();
-            mostrarAlerta('Las contraseñas no coinciden.');
-        } else if (!terminos) {
-            e.preventDefault();
-            mostrarAlerta('Debes aceptar los términos y condiciones para continuar.');
-        }
-    });
-</script>
 
 <?php include 'includes/footer.php'; ?>

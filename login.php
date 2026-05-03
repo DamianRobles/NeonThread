@@ -182,21 +182,4 @@ include 'includes/header.php';
     </div>
 </main>
 
-<script>
-    // Validación del cliente — se mantiene inline porque es específica de este formulario
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value.trim();
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        if (!email || !password) {
-            e.preventDefault();
-            mostrarAlerta('Por favor completa todos los campos.');
-        } else if (!emailRegex.test(email)) {
-            e.preventDefault();
-            mostrarAlerta('El formato del correo electrónico no es válido.');
-        }
-    });
-</script>
-
 <?php include 'includes/footer.php'; ?>
