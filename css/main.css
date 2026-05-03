@@ -1275,3 +1275,259 @@ body {
     background: var(--gb-cyan-dim);
     color: var(--gb-cyan);
 }
+
+/* ================================================
+   PROFILE — profile.php
+   ================================================ */
+
+/* Cabecera del perfil */
+.profile-header {
+    background-color: var(--gb-surface);
+    border-bottom: 1px solid var(--gb-border);
+    padding: 2rem 0;
+}
+
+/* Contenedor del avatar con posición relativa para el badge de admin */
+.profile-avatar-wrap {
+    position: relative;
+    width: fit-content;
+}
+
+/* Imagen de avatar */
+.profile-avatar {
+    width: 96px;
+    height: 96px;
+    object-fit: cover;
+    border: 2px solid var(--gb-cyan);
+}
+
+/* Placeholder con iniciales cuando no hay imagen */
+.profile-avatar-placeholder {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: var(--gb-cyan-dim);
+    border: 2px solid var(--gb-cyan);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--gb-cyan);
+    letter-spacing: 2px;
+}
+
+/* Nombre del usuario */
+.profile-username {
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--gb-text);
+}
+
+/* Filas de estadísticas en el sidebar */
+.profile-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--gb-border);
+    font-size: 0.82rem;
+}
+
+.profile-stat-row:last-child {
+    border-bottom: none;
+}
+
+.profile-stat-label {
+    color: var(--gb-text-muted);
+    display: flex;
+    align-items: center;
+}
+
+.profile-stat-value {
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+/* ================================================
+   PROFILE — profile.php
+   ================================================ */
+
+/* Cabecera del perfil */
+.profile-header {
+    background-color: var(--gb-surface);
+    border-bottom: 1px solid var(--gb-border);
+    padding: 2rem 0;
+}
+
+/* Contenedor del avatar con posición relativa para el badge de admin */
+.profile-avatar-wrap {
+    position: relative;
+    width: fit-content;
+}
+
+/* Imagen de avatar */
+.profile-avatar {
+    width: 96px;
+    height: 96px;
+    object-fit: cover;
+    border: 2px solid var(--gb-cyan);
+}
+
+/* Placeholder con iniciales cuando no hay imagen */
+.profile-avatar-placeholder {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: var(--gb-cyan-dim);
+    border: 2px solid var(--gb-cyan);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--gb-cyan);
+    letter-spacing: 2px;
+}
+
+/* Nombre del usuario */
+.profile-username {
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--gb-text);
+}
+
+/* Filas de estadísticas en el sidebar */
+.profile-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--gb-border);
+    font-size: 0.82rem;
+}
+
+.profile-stat-row:last-child {
+    border-bottom: none;
+}
+
+.profile-stat-label {
+    color: var(--gb-text-muted);
+    display: flex;
+    align-items: center;
+}
+
+.profile-stat-value {
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+/* ================================================
+   PROFILE — profile.php
+   ================================================ */
+
+/* Cabecera del perfil */
+.profile-header {
+    background-color: var(--gb-surface);
+    border-bottom: 1px solid var(--gb-border);
+    padding: 2rem 0;
+}
+
+/* Contenedor del avatar con posición relativa para el badge de admin */
+.profile-avatar-wrap {
+    position: relative;
+    width: fit-content;
+}
+
+/* Imagen de avatar */
+.profile-avatar {
+    width: 96px;
+    height: 96px;
+    object-fit: cover;
+    border: 2px solid var(--gb-cyan);
+}
+
+/* Placeholder con iniciales cuando no hay imagen */
+.profile-avatar-placeholder {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: var(--gb-cyan-dim);
+    border: 2px solid var(--gb-cyan);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--gb-cyan);
+    letter-spacing: 2px;
+}
+
+/* Nombre del usuario */
+.profile-username {
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--gb-text);
+}
+
+/* Filas de estadísticas en el sidebar */
+.profile-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--gb-border);
+    font-size: 0.82rem;
+}
+
+.profile-stat-row:last-child {
+    border-bottom: none;
+}
+
+.profile-stat-label {
+    color: var(--gb-text-muted);
+    display: flex;
+    align-items: center;
+}
+
+.profile-stat-value {
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+/* ================================================
+   EDIT-PROFILE — Avatar preview
+   ================================================ */
+
+.avatar-preview-wrap {
+    flex-shrink: 0;
+}
+
+/* Imagen de preview del avatar */
+.avatar-preview {
+    width: 96px;
+    height: 96px;
+    object-fit: cover;
+    border: 2px solid var(--gb-cyan);
+}
+
+/* Placeholder con iniciales mientras no hay preview */
+.avatar-preview-placeholder {
+    width: 96px;
+    height: 96px;
+    background: var(--gb-cyan-dim);
+    border: 2px solid var(--gb-cyan);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--gb-cyan);
+    letter-spacing: 2px;
+}

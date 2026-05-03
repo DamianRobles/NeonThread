@@ -250,6 +250,48 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+
+    // ================================================
+    // VALIDACIÓN — edit-profile.php
+    // Valida username y email. La contraseña es opcional:
+    // solo valida si el usuario escribió algo en password_new.
+    // ================================================
+    const editProfileForm = document.getElementById('editProfileForm');
+    if (editProfileForm) {
+        editProfileForm.addEventListener('submit', function (e) {
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const passwordNew = document.getElementById('password_new').value;
+            const passwordCon = document.getElementById('password_new_confirm').value;
+            const password = document.getElementById('password').value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const usernameRegex = /^[a-zA-Z0-9_\-]+$/;
+
+            if (!username || !email) {
+                e.preventDefault();
+                mostrarAlerta('El nombre de usuario y el correo no pueden estar vacíos.');
+            } else if (username.length < 3 || username.length > 50) {
+                e.preventDefault();
+                mostrarAlerta('El nombre de usuario debe tener entre 3 y 50 caracteres.');
+            } else if (!usernameRegex.test(username)) {
+                e.preventDefault();
+                mostrarAlerta('El nombre de usuario solo puede contener letras, números, guiones y guiones bajos.');
+            } else if (!emailRegex.test(email)) {
+                e.preventDefault();
+                mostrarAlerta('El formato del correo electrónico no es válido.');
+            } else if (passwordNew && !password) {
+                e.preventDefault();
+                mostrarAlerta('Debes ingresar tu contraseña actual para poder cambiarla.');
+            } else if (passwordNew && passwordNew.length < 8) {
+                e.preventDefault();
+                mostrarAlerta('La nueva contraseña debe tener al menos 8 caracteres.');
+            } else if (passwordNew && passwordNew !== passwordCon) {
+                e.preventDefault();
+                mostrarAlerta('Las nuevas contraseñas no coinciden.');
+            }
+        });
+    }
+
 });
 
 
