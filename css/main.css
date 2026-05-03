@@ -957,3 +957,321 @@ body {
     display: flex;
     align-items: flex-start;
 }
+
+/* ================================================
+   SECTION — section.php
+   ================================================ */
+
+/* Breadcrumb de navegación */
+.breadcrumb-glitch {
+    list-style: none;
+    padding: 0; margin: 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 0.75rem;
+}
+
+/* Botones de ordenación (Recientes / Populares) */
+.sort-btn {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gb-text-muted);
+    border: 1px solid var(--gb-border);
+    background: var(--gb-surface);
+    padding: 4px 10px;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.sort-btn:hover        { color: var(--gb-cyan); border-color: var(--gb-cyan); }
+.sort-btn-active       { color: var(--gb-cyan); border-color: var(--gb-cyan);
+                         background: var(--gb-cyan-dim); }
+
+/* Fila de hilo en la lista */
+.thread-row {
+    border-radius: 4px;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.thread-row:hover {
+    border-color: var(--gb-cyan);
+    background-color: var(--gb-surface-2) !important;
+}
+
+/* Avatar con iniciales cuando no hay imagen */
+.avatar-placeholder {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--gb-cyan-dim);
+    border: 1px solid rgba(0,245,255,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700; color: var(--gb-cyan);
+    flex-shrink: 0;
+}
+
+/* Variante más grande para los posts del thread */
+.avatar-placeholder-lg { width: 42px; height: 42px; font-size: 0.82rem; }
+
+/* Badge de hilo fijado */
+.badge-pin {
+    font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px;
+    background: var(--gb-pink-dim); color: var(--gb-pink);
+    border: 1px solid var(--gb-pink); padding: 1px 7px; border-radius: 2px;
+    white-space: nowrap;
+}
+
+.thread-row-title {
+    font-size: 0.9rem; font-weight: 600;
+    color: var(--gb-text); line-height: 1.4;
+}
+
+/* El título cambia de color al hacer hover sobre la fila */
+.thread-row:hover .thread-row-title { color: var(--gb-cyan); }
+
+/* Vista previa del contenido truncada a una línea */
+.thread-row-preview {
+    font-size: 0.75rem; color: var(--gb-text-muted); line-height: 1.5;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.thread-row-meta { font-size: 0.7rem; color: var(--gb-text-muted); }
+
+.thread-stat-num { font-size: 1rem; font-weight: 700; line-height: 1; }
+.thread-stat-lbl { font-size: 0.65rem; color: var(--gb-text-muted);
+                   text-transform: uppercase; letter-spacing: 1px; }
+
+/* Paginación */
+.pagination-glitch {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; gap: 4px; flex-wrap: wrap;
+}
+
+.page-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 34px; height: 34px; padding: 0 8px;
+    background: var(--gb-surface); border: 1px solid var(--gb-border);
+    color: var(--gb-text-muted); font-size: 0.8rem; border-radius: 2px;
+    text-decoration: none; transition: all 0.15s;
+}
+
+.page-btn:hover          { border-color: var(--gb-cyan); color: var(--gb-cyan); }
+.page-btn-active         { border-color: var(--gb-cyan); color: var(--gb-cyan);
+                           background: var(--gb-cyan-dim); }
+.page-btn-disabled       { opacity: 0.35; cursor: default; pointer-events: none; }
+
+/* Estado vacío cuando no hay hilos en la sección */
+.empty-state {
+    text-align: center; padding: 3rem 1rem;
+    border: 1px dashed var(--gb-border); border-radius: 4px;
+}
+
+/* ================================================
+   THREAD — thread.php
+   ================================================ */
+
+/* Card de cada post (hilo original o respuesta) */
+.post-card {
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+/* Cabecera del post con fondo diferenciado */
+.post-header {
+    padding: 1rem 1.25rem 0.75rem;
+    border-bottom: 1px solid var(--gb-border);
+    background-color: var(--gb-surface-2);
+}
+
+/* Nombre del autor como enlace */
+.post-author {
+    font-size: 0.88rem; font-weight: 700;
+    color: var(--gb-cyan); letter-spacing: 0.5px;
+    transition: opacity 0.15s;
+}
+.post-author:hover { opacity: 0.8; }
+
+.post-meta {
+    font-size: 0.7rem; color: var(--gb-text-muted); margin-top: 2px;
+    display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
+}
+
+/* Cuerpo del post con interlineado cómodo */
+.post-body {
+    padding: 1.25rem;
+    font-size: 0.88rem; line-height: 1.8; color: var(--gb-text);
+}
+.post-body p             { margin-bottom: 0.75rem; }
+.post-body p:last-child  { margin-bottom: 0; }
+
+.post-footer {
+    padding: 0.75rem 1.25rem;
+    border-top: 1px solid var(--gb-border);
+    background-color: var(--gb-surface-2);
+}
+
+/* Botón de like con estado activo */
+.like-btn {
+    background: transparent; border: 1px solid var(--gb-border);
+    color: var(--gb-text-muted); font-size: 0.78rem;
+    font-family: var(--gb-font); padding: 4px 12px; border-radius: 2px;
+    cursor: pointer; transition: all 0.15s;
+    display: inline-flex; align-items: center;
+}
+.like-btn:hover  { border-color: var(--gb-pink); color: var(--gb-pink); }
+.like-btn.liked  { border-color: var(--gb-pink); color: var(--gb-pink);
+                   background: var(--gb-pink-dim); }
+
+/* Botones de editar / eliminar */
+.post-action-btn {
+    background: transparent; border: 1px solid var(--gb-border);
+    color: var(--gb-text-muted); padding: 4px 8px; border-radius: 2px;
+    cursor: pointer; font-size: 0.78rem; transition: all 0.15s;
+}
+.post-action-btn:hover        { border-color: var(--gb-cyan); color: var(--gb-cyan); }
+.post-action-btn-danger:hover { border-color: var(--gb-pink); color: var(--gb-pink); }
+
+/* Título del hilo en el breadcrumb truncado */
+.thread-breadcrumb-title {
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 280px;
+}
+
+/* Caja que invita a iniciar sesión para responder */
+.login-prompt { border-radius: 4px; }
+
+/* Botón outline pequeño (subir al inicio) */
+.btn-neon-sm-outline {
+    background: transparent; border: 1px solid var(--gb-border);
+    color: var(--gb-text-muted); font-size: 0.78rem;
+    text-transform: uppercase; letter-spacing: 1px;
+    padding: 6px 12px; border-radius: 2px; text-decoration: none;
+    transition: all 0.15s; font-family: var(--gb-font);
+    display: inline-flex; align-items: center;
+}
+.btn-neon-sm-outline:hover { border-color: var(--gb-cyan); color: var(--gb-cyan); }
+
+/* Filas de info en el sidebar del thread */
+.thread-info-row {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.75rem; padding: 5px 0;
+    border-bottom: 1px solid var(--gb-border);
+}
+.thread-info-row:last-child { border-bottom: none; }
+
+/* Links rápidos en el sidebar */
+.quick-link {
+    font-size: 0.78rem; color: var(--gb-text-muted);
+    text-decoration: none; display: flex; align-items: center;
+    padding: 5px 0; transition: color 0.15s;
+    border-bottom: 1px solid var(--gb-border);
+}
+.quick-link:last-child { border-bottom: none; }
+.quick-link:hover      { color: var(--gb-cyan); }
+
+/* ================================================
+   SEARCH — search.php
+   ================================================ */
+
+/* Estado vacío (sin búsqueda o sin resultados) */
+.search-empty-state {
+    text-align: center;
+    padding: 4rem 1rem;
+    border: 1px dashed var(--gb-border);
+    border-radius: 4px;
+}
+
+/* Tags de búsquedas sugeridas */
+.search-tag {
+    display: inline-block;
+    background-color: var(--gb-surface);
+    border: 1px solid var(--gb-border);
+    color: var(--gb-text-muted);
+    font-size: 0.75rem;
+    padding: 4px 12px;
+    border-radius: 2px;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: border-color 0.15s, color 0.15s;
+}
+
+.search-tag:hover {
+    border-color: var(--gb-cyan);
+    color: var(--gb-cyan);
+}
+
+/* Resaltado del término buscado dentro del título */
+.search-highlight {
+    background-color: rgba(0, 245, 255, 0.15);
+    color: var(--gb-cyan);
+    border-radius: 2px;
+    padding: 0 2px;
+    font-style: normal;
+}
+
+/* ================================================
+   NAVBAR — Barra de búsqueda
+   ================================================ */
+
+/* Contenedor del form de búsqueda dentro del navbar */
+.navbar-search {
+    flex: 0 1 240px; /* No crece más de 240px pero puede achicarse */
+}
+
+/* Input del buscador en el navbar */
+.navbar-search-input {
+    background-color: var(--gb-surface-2) !important;
+    border: 1px solid var(--gb-border) !important;
+    border-right: none !important;
+    color: var(--gb-text) !important;
+    font-family: var(--gb-font);
+    font-size: 0.78rem !important;
+    border-radius: 2px 0 0 2px !important;
+}
+
+.navbar-search-input:focus {
+    border-color: var(--gb-cyan) !important;
+    box-shadow: none !important;
+}
+
+.navbar-search-input::placeholder {
+    color: var(--gb-text-muted);
+    font-size: 0.75rem;
+}
+
+/* ================================================
+   NEW-THREAD — new-thread.php
+   ================================================ */
+
+/* Botones radio para seleccionar sección */
+.btn-section-radio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 0.5rem;
+    background: var(--gb-surface-2);
+    border: 1px solid var(--gb-border);
+    border-radius: 4px;
+    color: var(--gb-text-muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+}
+
+.btn-section-radio:hover {
+    border-color: var(--gb-cyan);
+    color: var(--gb-cyan);
+}
+
+/* Estado seleccionado: Bootstrap oculta el radio y estiliza el label adyacente */
+.btn-check:checked + .btn-section-radio {
+    border-color: var(--gb-cyan);
+    background: var(--gb-cyan-dim);
+    color: var(--gb-cyan);
+}

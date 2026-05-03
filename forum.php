@@ -1,4 +1,5 @@
 <?php
+
 /**
  * forum.php — Vista general del foro
  *
@@ -115,28 +116,7 @@ $totalReplies = array_sum(array_column($secciones, 'total_replies'));
 </section>
 
 <!-- =============================================
-     BARRA DE BÚSQUEDA
-     ============================================= -->
-<section class="py-3" style="background-color: var(--gb-surface); border-bottom: 1px solid var(--gb-border);">
-    <div class="container">
-        <form action="<?= $basePath ?>search.php" method="GET" role="search"
-            class="d-flex gap-2 align-items-center">
-            <div class="flex-grow-1" style="max-width: 500px;">
-                <input
-                    type="search"
-                    name="q"
-                    class="form-control auth-input"
-                    placeholder="Buscar en el foro..."
-                    value="<?= htmlspecialchars($_GET['q'] ?? '') ?>" />
-            </div>
-            <button type="submit" class="btn btn-neon">
-                <i class="bi bi-search me-1"></i>Buscar
-            </button>
-        </form>
-    </div>
-</section>
-
-<!-- =============================================
+     CONTENIDO PRINCIPAL
      CONTENIDO PRINCIPAL
      ============================================= -->
 <main class="py-4">

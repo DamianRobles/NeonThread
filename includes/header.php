@@ -98,6 +98,24 @@ $basePath      = $basePath      ?? "./";
 
                 </ul>
 
+                <!-- Barra de búsqueda central: envía a search.php con el parámetro ?q= -->
+                <form action="<?= $basePath ?>search.php" method="GET"
+                    class="navbar-search mx-lg-3 my-2 my-lg-0" role="search">
+                    <div class="input-group input-group-sm">
+                        <input
+                            type="search"
+                            name="q"
+                            class="form-control navbar-search-input"
+                            placeholder="Buscar hilos..."
+                            value="<?= htmlspecialchars($_GET['q'] ?? '') ?>"
+                            maxlength="100"
+                            aria-label="Buscar hilos" />
+                        <button type="submit" class="btn btn-neon-sm" aria-label="Buscar">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </form>
+
                 <!-- Links del lado derecho: cambian según el estado de sesión -->
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center gap-2">
 
