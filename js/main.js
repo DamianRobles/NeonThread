@@ -296,7 +296,98 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 // ================================================
-// TOGGLE LIKE
+// CONFIRM DELETE — admin/dashboard.php
+// Reemplaza el confirm() nativo con un modal estilizado.
+// Devuelve false siempre para cancelar el submit inmediato,
+// y envía el form manualmente si el usuario confirma.
+// ================================================
+function confirmDelete(tipo, nombre) {
+    // Eliminar modal previo si existe
+    const previo = document.getElementById('confirmModal');
+    if (previo) previo.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'confirmModal';
+    modal.style.cssText = `
+        position: fixed; inset: 0; z-index: 9999;
+        background: rgba(0,0,0,0.75);
+        display: flex; align-items: center; justify-content: center;
+        padding: 1rem;
+    `;
+
+    modal.innerHTML = `
+        <div style="
+            background: var(--gb-surface);
+            border: 1px solid var(--gb-pink);
+            border-radius: 4px;
+            padding: 2rem;
+            max-width: 420px;
+            width: 100%;
+            font-family: var(--gb-font);
+        ">
+            <div style="font-size:1.5rem; color: var(--gb-pink); margin-bottom:.75rem;">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+            <p style="color: var(--gb-text); font-size:.88rem; margin-bottom:.5rem;">
+                ¿Seguro que quieres eliminar este ${tipo}?
+            </p>
+            <p style="color: var(--gb-text-muted); font-size:.8rem; margin-bottom:1.5rem;">
+                "${nombre}"
+            </p>
+            <p style="color: var(--gb-pink); font-size:.75rem; margin-bottom:1.5rem;">
+                Esta acción no se puede deshacer.
+            </p>
+            <div style="display:flex; gap:.75rem; justify-content:flex-end;">
+                <button id="cancelBtn" style="
+                    background: transparent;
+                    border: 1px solid var(--gb-border);
+                    color: var(--gb-text-muted);
+                    padding: .4rem 1rem;
+                    border-radius: 2px;
+                    cursor: pointer;
+                    font-family: var(--gb-font);
+                    font-size: .78rem;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                ">Cancelar</button>
+                <button id="confirmBtn" style="
+                    background: var(--gb-pink-dim);
+                    border: 1px solid var(--gb-pink);
+                    color: var(--gb-pink);
+                    padding: .4rem 1rem;
+                    border-radius: 2px;
+                    cursor: pointer;
+                    font-family: var(--gb-font);
+                    font-size: .78rem;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                ">Eliminar</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Guardar referencia al form que disparó el evento
+    const form = document.activeElement.closest('form');
+
+    document.getElementById('cancelBtn').addEventListener('click', function () {
+        modal.remove();
+    });
+
+    document.getElementById('confirmBtn').addEventListener('click', function () {
+        modal.remove();
+        if (form) form.submit();
+    });
+
+    // Cerrar al hacer click fuera del modal
+    modal.addEventListener('click', function (e) {
+        if (e.target === modal) modal.remove();
+    });
+
+    // Siempre retorna false para cancelar el submit original
+    return false;
+}
 // Se declara fuera del DOMContentLoaded porque se llama
 // desde atributos onclick en el HTML de thread.php.
 // Manejo visual únicamente — el INSERT real se hará con AJAX.
