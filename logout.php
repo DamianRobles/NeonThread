@@ -1,19 +1,24 @@
 <?php
 /**
- * logout.php — Cierre de sesión
- *
- * Destruye la sesión activa y redirige al inicio.
- * No tiene vista propia — es solo lógica de servidor.
+ * logout.php — Cierre de sesión seguro (solo POST + CSRF)
  */
+require_once 'includes/db.php';
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) session_start();
 
-// Eliminar todas las variables de sesión
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: index.php');
+    exit;
+}
+
+verificarCsrf();
+
 $_SESSION = [];
-
-// Destruir la sesión en el servidor
+if (ini_get('session.use_cookies')) {
+    $p = session_get_cookie_params();
+    setcookie(session_name(), '', time() - 42000,
+              $p['path'], $p['domain'], $p['secure'], $p['httponly']);
+}
 session_destroy();
-
-// Redirigir al inicio
 header('Location: index.php');
 exit;
