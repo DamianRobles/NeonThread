@@ -129,7 +129,7 @@ include 'includes/header.php';
             <div class="form-check">
                 <input class="form-check-input auth-check" type="checkbox" id="terminos" name="terminos" required>
                 <label class="form-check-label auth-check-label" for="terminos">
-                    Acepto los <a href="#" class="text-neon-cyan">términos y condiciones</a>
+                    Acepto los <a href="terms.php" target="_blank" class="text-neon-cyan">términos y condiciones</a>
                 </label>
             </div>
         </div>
