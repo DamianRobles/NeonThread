@@ -27,6 +27,17 @@ Foro de discusión temático sobre cultura cyberpunk. Los usuarios pueden regist
    http://localhost/NeonThread
    ```
 
+5. Usuario Admin Test
+   ```
+   admin@admin.com
+   admin123
+   ```
+6. Usuario User Test
+   ```
+   user@user.com
+   user1234
+   ```
+
 ---
 
 ## Tecnologías utilizadas
