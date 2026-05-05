@@ -1,0 +1,5 @@
+# ignora la base de datos
+neonthread.db
+
+# ignora la carpeta de uploads
+uploads/
